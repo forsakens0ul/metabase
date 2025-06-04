@@ -253,7 +253,7 @@ export const PLUGIN_SELECTORS = {
   getLoadingMessageFactory: (_state: State) => getLoadingMessage,
   getIsWhiteLabeling: (_state: State) => false,
   // eslint-disable-next-line no-literal-metabase-strings -- This is the actual Metabase name, so we don't want to translate it.
-  getApplicationName: (_state: State) => "Metabase",
+  getApplicationName: (_state: State) => "方舱",
   getShowMetabaseLinks: (_state: State) => true,
   getLoginPageIllustration: (_state: State): IllustrationValue => {
     return defaultLoginPageIllustration;

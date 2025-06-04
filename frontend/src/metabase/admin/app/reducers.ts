@@ -37,16 +37,8 @@ export const getAdminPaths: () => AdminPath[] = () => {
       path: "/admin/permissions",
       key: "permissions",
     },
-    {
-      name: t`Performance`,
-      path: "/admin/performance",
-      key: "performance",
-    },
-    {
-      name: t`Tools`,
-      path: "/admin/tools",
-      key: "tools",
-    },
+    
+    
   ];
 
   items.push(...PLUGIN_ADMIN_NAV_ITEMS, {

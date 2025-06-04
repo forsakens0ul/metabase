@@ -22,22 +22,5 @@ export const UpsellUsageAnalytics = (
       page: "usage-and-performance-tools/usage-analytics",
     }),
   );
-  return (
-    <Box
-      component={UpsellCard}
-      large
-      title={t`See who’s doing what, when`}
-      buttonText={t`Try for free`}
-      buttonLink={UPGRADE_URL}
-      campaign="usage_analytics"
-      illustrationSrc={usageAnalyticsIllustrationSource}
-      lh="1.5rem"
-      {...props}
-    >
-      <Text lh="1.5rem" style={{ paddingInlineStart: "2rem" }}>
-        {t`Get detailed reports for tracking Metabase content usage, performance, and configuration changes.`}{" "}
-        <ExternalLink href={usageAnalyticsUrl}>{t`Learn more`}</ExternalLink>
-      </Text>
-    </Box>
-  );
+  return null;
 };

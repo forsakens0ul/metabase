@@ -12,15 +12,5 @@ export const UpsellPermissions = ({ source }: { source: string }) => {
     return null;
   }
 
-  return (
-    <UpsellBanner
-      campaign="advanced-permissions"
-      buttonText={t`Try for free`}
-      buttonLink={UPGRADE_URL}
-      source={source}
-      title={t`Get advanced permissions`}
-    >
-      {t`Granular control down to the row- and column-level security. Manage advanced permissions per user group, or even at the database level.`}
-    </UpsellBanner>
-  );
+  return null;
 };

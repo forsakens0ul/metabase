@@ -20,23 +20,5 @@ export const UpsellSSO = ({ source }: { source: string }) => {
     return null;
   }
 
-  return (
-    <UpsellCard
-      title={t`Tired of manually managing people and groups?`}
-      campaign="sso"
-      buttonText={t`Try Metabase Pro`}
-      buttonLink={UPGRADE_URL}
-      source={source}
-      style={{ maxWidth: 242 }}
-    >
-      <Box px=".5rem">
-        {t`Metabase Pro and Enterprise plans include:`}
-        <List size="sm">
-          <List.Item>{t`SSO with SAML and JWT`}</List.Item>
-          <List.Item>{t`Metabase group sync with SAML, JWT, and LDAP`}</List.Item>
-          <List.Item>{t`User provisioning with SCIM`}</List.Item>
-        </List>
-      </Box>
-    </UpsellCard>
-  );
+  return null;
 };

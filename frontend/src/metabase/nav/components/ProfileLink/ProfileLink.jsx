@@ -4,7 +4,7 @@ import { useState } from "react";
 import { t } from "ttag";
 import _ from "underscore";
 
-import {
+import { 
   getAdminPaths,
   getIsOnboardingSidebarLinkDismissed,
 } from "metabase/admin/app/selectors";
@@ -85,42 +85,6 @@ function ProfileLink({
         icon: null,
         link: "/admin",
         event: `Navbar;Profile Dropdown;Enter Admin`,
-      },
-      helpLink.visible && {
-        title: t`Help`,
-        icon: null,
-        link: helpLink.href,
-        externalLink: true,
-        event: `Navbar;Profile Dropdown;About ${tag}`,
-      },
-      // If the instance is not new, we're removing the link from the sidebar automatically!
-      (!isNewInstance || showOnboardingLink) &&
-        canAccessOnboardingPage && {
-          // eslint-disable-next-line no-literal-metabase-strings -- We don't show this to whitelabelled instances
-          title: t`How to use Metabase`,
-          icon: null,
-          link: "/getting-started",
-          event: `Navbar;Profile Dropdown;Getting Started`,
-        },
-      {
-        title: t`Keyboard Shortcuts`,
-        icon: null,
-        action: () => dispatch(setOpenModal("help")),
-      },
-      {
-        title: t`Report an issue`,
-        icon: null,
-        action: () => {
-          trackErrorDiagnosticModalOpened("profile-menu");
-          openDiagnostics();
-        },
-        event: `Navbar;Profile Dropdown;Report Bug`,
-      },
-      {
-        title: t`About ${applicationName}`,
-        icon: null,
-        action: () => openModal("about"),
-        event: `Navbar;Profile Dropdown;About ${tag}`,
       },
       {
         title: t`Sign out`,

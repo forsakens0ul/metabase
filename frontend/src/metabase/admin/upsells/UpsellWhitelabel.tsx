@@ -28,19 +28,5 @@ export const UpsellWhitelabel = ({ source }: { source: string }) => {
     return null;
   }
 
-  return (
-    <UpsellBigCard
-      title={t`Make Metabase look like you`}
-      campaign="whitelabel"
-      buttonText={t`Try for free`}
-      buttonLink={UPGRADE_URL}
-      source={source}
-      illustrationSrc="app/assets/img/upsell-whitelabel.png"
-    >
-      {t`Customize your internal or customer-facing analytics with your brand name, logo, colors, font and more, and hide giveaway Metabase elements.`}
-      <ExternalLink className={S.SecondaryCTALink} href={url}>
-        {t`Learn more`}
-      </ExternalLink>
-    </UpsellBigCard>
-  );
+  return null;
 };

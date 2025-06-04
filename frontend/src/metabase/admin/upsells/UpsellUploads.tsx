@@ -18,17 +18,5 @@ export const UpsellUploads = ({ source }: { source: string }) => {
     return null;
   }
 
-  return (
-    <UpsellCard
-      title={t`Manage your uploads`}
-      campaign="manage-uploads"
-      buttonText={t`Try for free`}
-      buttonLink={UPGRADE_URL}
-      source={source}
-    >
-      {c("{0} is the string 'Upgrade to Metabase Pro'").jt`${(
-        <strong key="upgrade">{t`Upgrade to Metabase Pro`}</strong>
-      )} to manage your uploaded files and available storage space.`}
-    </UpsellCard>
-  );
+  return null;
 };

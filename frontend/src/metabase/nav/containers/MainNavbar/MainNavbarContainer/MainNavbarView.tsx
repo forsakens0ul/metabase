@@ -189,26 +189,7 @@ export function MainNavbarView({
             >
               {t`Home`}
             </PaddedSidebarLink>
-            {showOnboardingLink && (
-              <PaddedSidebarLinkDismissible
-                icon="learn"
-                right={
-                  <Tooltip label={t`Hide page`} offset={16} position="right">
-                    <Icon
-                      className="dismiss"
-                      name="eye_crossed_out"
-                      onClick={dismissOnboardingLink}
-                    />
-                  </Tooltip>
-                }
-                url={ONBOARDING_URL}
-                isSelected={isOnboardingPageSelected}
-                onClick={() => trackOnboardingChecklistOpened()}
-              >
-                {/* eslint-disable-next-line no-literal-metabase-strings -- We only show this to non-whitelabelled instances */}
-                {t`How to use Metabase`}
-              </PaddedSidebarLinkDismissible>
-            )}
+            
             {showUploadMenu && <DwhUploadMenu />}
           </SidebarSection>
 
