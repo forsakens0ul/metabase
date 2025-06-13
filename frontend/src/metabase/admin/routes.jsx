@@ -53,6 +53,8 @@ import {
 import { PerformanceTabId } from "./performance/types";
 import RedirectToAllowedSettings from "./settings/containers/RedirectToAllowedSettings";
 import { ToolsUpsell } from "./tools/components/ToolsUpsell";
+import SandboxList from "./sandbox/components/SandboxList";
+import SandboxForm from "./sandbox/components/SandboxForm";
 
 const getRoutes = (store, CanAccessSettings, IsAdmin) => (
   <Route
@@ -206,6 +208,10 @@ const getRoutes = (store, CanAccessSettings, IsAdmin) => (
       <Fragment>
         {PLUGIN_ADMIN_ROUTES.map((getRoutes) => getRoutes(store))}
       </Fragment>
+      {/* SANDBOX */}
+      <Route path="sandbox" component={SandboxList} />
+      <Route path="sandbox/new" component={SandboxForm} />
+      <Route path="sandbox/:id" component={SandboxForm} />
     </Route>
   </Route>
 );

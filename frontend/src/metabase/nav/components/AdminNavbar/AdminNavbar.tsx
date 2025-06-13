@@ -3,17 +3,14 @@ import cx from "classnames";
 import { useState } from "react";
 import { push } from "react-router-redux";
 import { t } from "ttag";
-
+1
 import LogoIcon from "metabase/components/LogoIcon";
 import CS from "metabase/css/core/index.css";
-import { useDispatch, useSelector } from "metabase/lib/redux";
+import { useDispatch } from "metabase/lib/redux";
 import { useRegisterShortcut } from "metabase/palette/hooks/useRegisterShortcut";
-import { getIsPaidPlan } from "metabase/selectors/settings";
+
 import { Button, Icon } from "metabase/ui";
 import type { User } from "metabase-types/api";
-import type { AdminPath } from "metabase-types/store";
-
-import StoreLink from "../StoreLink";
 
 import { AdminNavItem } from "./AdminNavItem";
 import { AdminNavLink } from "./AdminNavItem.styled";
@@ -40,7 +37,7 @@ export const AdminNavbar = ({
   path: currentPath,
   adminPaths,
 }: AdminNavbarProps) => {
-  const isPaidPlan = useSelector(getIsPaidPlan);
+  
   const dispatch = useDispatch();
 
   useRegisterShortcut(

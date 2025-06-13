@@ -37,8 +37,11 @@ export const getAdminPaths: () => AdminPath[] = () => {
       path: "/admin/permissions",
       key: "permissions",
     },
-    
-    
+    {
+      name: t`Sandbox`,
+      path: "/admin/sandbox",
+      key: "sandbox",
+    },
   ];
 
   items.push(...PLUGIN_ADMIN_NAV_ITEMS, {
