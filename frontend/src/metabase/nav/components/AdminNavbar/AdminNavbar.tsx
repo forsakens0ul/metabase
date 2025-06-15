@@ -3,12 +3,11 @@ import cx from "classnames";
 import { useState } from "react";
 import { push } from "react-router-redux";
 import { t } from "ttag";
-1
+
 import LogoIcon from "metabase/components/LogoIcon";
 import CS from "metabase/css/core/index.css";
 import { useDispatch } from "metabase/lib/redux";
 import { useRegisterShortcut } from "metabase/palette/hooks/useRegisterShortcut";
-
 import { Button, Icon } from "metabase/ui";
 import type { User } from "metabase-types/api";
 
@@ -37,7 +36,6 @@ export const AdminNavbar = ({
   path: currentPath,
   adminPaths,
 }: AdminNavbarProps) => {
-  
   const dispatch = useDispatch();
 
   useRegisterShortcut(
@@ -87,7 +85,6 @@ export const AdminNavbar = ({
           ))}
         </AdminNavbarItems>
 
-       
         <AdminExitLink
           to="/"
           data-testid="exit-admin"

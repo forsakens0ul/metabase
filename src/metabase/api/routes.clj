@@ -1,5 +1,6 @@
-(def ^:private routes
-  [;; 添加沙盒API路由
-   (api/define-routes metabase.api.sandbox)
-   // ... existing code ...
-]) 
+(ns metabase.api.routes
+  (:require
+   [metabase.api.routes.sandbox :as sandbox]))
+
+(def routes
+  [["/sandbox" sandbox/routes]]) 

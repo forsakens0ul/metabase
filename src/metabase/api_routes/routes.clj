@@ -165,6 +165,7 @@
    "/public"               (+public-exceptions 'metabase.public-sharing.api)
    "/pulse"                metabase.pulse.api/pulse-routes
    "/revision"             (+auth 'metabase.revisions.api)
+   "/sandbox"              (+auth 'metabase.api.routes.sandbox)
    "/search"               (+auth metabase.search.api/routes)
    "/segment"              (+auth 'metabase.segments.api)
    "/session"              metabase.session.api/routes

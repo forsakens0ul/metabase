@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { t } from "ttag";
 import { Link } from "react-router";
-import { Button, Icon, Alert } from "metabase/ui";
-import { getSandboxPolicies, deleteSandboxPolicy } from "../api";
+import { t } from "ttag";
+
+import { del, get } from "metabase/lib/api";
+import { Alert, Button, Icon } from "metabase/ui";
 
 const SandboxList = () => {
   const [policies, setPolicies] = useState([]);
@@ -12,11 +13,11 @@ const SandboxList = () => {
   const loadPolicies = async () => {
     try {
       setLoading(true);
-      const data = await getSandboxPolicies();
-      setPolicies(data);
+      const response = await get("/api/sandbox");
+      setPolicies(response);
       setError(null);
     } catch (err) {
-      setError(err.message || t`加载失败`);
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -25,10 +26,10 @@ const SandboxList = () => {
   const handleDelete = async (id) => {
     if (window.confirm(t`确定要删除这个策略吗？`)) {
       try {
-        await deleteSandboxPolicy(id);
+        await del(`/api/sandbox/${id}`);
         await loadPolicies();
       } catch (err) {
-        setError(err.message || t`删除失败`);
+        setError(err.message);
       }
     }
   };
@@ -53,7 +54,7 @@ const SandboxList = () => {
       <div className="flex justify-between align-center mb4">
         <h2>{t`沙盒策略`}</h2>
         <Link to="/admin/sandbox/new">
-          <Button primary>
+          <Button variant="filled">
             <Icon name="add" className="mr1" />
             {t`新建策略`}
           </Button>
@@ -70,20 +71,20 @@ const SandboxList = () => {
         <table className="full">
           <thead>
             <tr>
+              <th>{t`名称`}</th>
+              <th>{t`描述`}</th>
               <th>{t`用户组`}</th>
               <th>{t`表`}</th>
-              <th>{t`过滤条件`}</th>
               <th>{t`操作`}</th>
             </tr>
           </thead>
           <tbody>
-            {policies.map(policy => (
+            {policies.map((policy) => (
               <tr key={policy.id}>
+                <td>{policy.name}</td>
+                <td>{policy.description}</td>
                 <td>{policy.group_name}</td>
                 <td>{policy.table_name}</td>
-                <td>
-                  <code>{policy.filter_condition}</code>
-                </td>
                 <td>
                   <div className="flex align-center">
                     <Link
@@ -93,8 +94,8 @@ const SandboxList = () => {
                       {t`编辑`}
                     </Link>
                     <Button
-                      small
-                      danger
+                      variant="danger"
+                      size="sm"
                       onClick={() => handleDelete(policy.id)}
                     >
                       {t`删除`}
@@ -105,7 +106,7 @@ const SandboxList = () => {
             ))}
             {policies.length === 0 && (
               <tr>
-                <td colSpan="4" className="text-centered text-muted py4">
+                <td colSpan="5" className="text-centered text-muted py4">
                   {t`暂无沙盒策略`}
                 </td>
               </tr>
@@ -117,4 +118,4 @@ const SandboxList = () => {
   );
 };
 
-export default SandboxList; 
+export default SandboxList;
