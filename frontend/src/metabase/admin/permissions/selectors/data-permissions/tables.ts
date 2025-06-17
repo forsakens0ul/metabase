@@ -210,8 +210,8 @@ export const buildTablesPermissions = (
   const shouldShowViewDataColumn =
     PLUGIN_ADVANCED_PERMISSIONS.shouldShowViewDataColumn && hasAnyAccessOptions;
 
-  return _.compact([
-    shouldShowViewDataColumn && accessPermission,
+  return [
+    accessPermission,
     nativePermission,
     ...PLUGIN_FEATURE_LEVEL_PERMISSIONS.getFeatureLevelDataPermissions(
       entityId,
@@ -222,5 +222,5 @@ export const buildTablesPermissions = (
       defaultGroup,
       "tables",
     ),
-  ]);
+  ];
 };

@@ -125,21 +125,24 @@ export function PermissionsTable({
                   )}
                 </PermissionsTableCell>
 
-                {entity.permissions.map((permission, index) => {
+                {columns.slice(1).map((col, index) => {
+                  const permission = entity.permissions[index];
                   return (
                     <PermissionsTableCell
-                      key={permission.type ?? String(index)}
+                      key={permission?.type ?? String(index)}
                     >
-                      <PermissionsSelect
-                        {...permission}
-                        onChange={(value, toggleState) =>
-                          handleChange(value, toggleState, entity, permission)
-                        }
-                        onAction={(actionCreator) =>
-                          onAction(actionCreator, entity)
-                        }
-                        colorScheme={colorScheme}
-                      />
+                      {permission && (
+                        <PermissionsSelect
+                          {...permission}
+                          onChange={(value, toggleState) =>
+                            handleChange(value, toggleState, entity, permission)
+                          }
+                          onAction={(actionCreator) =>
+                            onAction(actionCreator, entity)
+                          }
+                          colorScheme={colorScheme}
+                        />
+                      )}
                     </PermissionsTableCell>
                   );
                 })}

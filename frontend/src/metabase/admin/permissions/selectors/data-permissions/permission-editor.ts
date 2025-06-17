@@ -283,7 +283,7 @@ export const getDatabasesPermissionEditor = createSelector(
 
     const columns = _.compact([
       { name: getEditorEntityName(params, hasSingleSchema) },
-      showViewDataColumn && { name: t`View data` },
+      { name: t`View data` },
       { name: t`Create queries` },
       ...(permissionSubject
         ? PLUGIN_FEATURE_LEVEL_PERMISSIONS.getDataColumns(permissionSubject)
@@ -437,7 +437,7 @@ export const getGroupsDataPermissionEditor: GetGroupsDataPermissionEditorSelecto
 
       const columns = _.compact([
         { name: t`Group name` },
-        showViewDataColumn && { name: t`View data` },
+        { name: t`View data` },
         { name: t`Create queries` },
         ...PLUGIN_FEATURE_LEVEL_PERMISSIONS.getDataColumns(permissionSubject),
       ]);
