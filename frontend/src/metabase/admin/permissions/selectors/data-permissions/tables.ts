@@ -100,6 +100,8 @@ const buildAccessPermission = (
     value,
   );
 
+  console.log("View data options:", options);
+
   const isDisabled =
     isAdmin ||
     options.length <= 1 ||

@@ -81,18 +81,19 @@ const buildAccessPermission = (
   const options = PLUGIN_ADVANCED_PERMISSIONS.addDatabasePermissionOptions(
     _.compact([
       ...baseOptions,
-      originalAccessPermissionValue ===
+        originalAccessPermissionValue ===
         DATA_PERMISSION_OPTIONS.noSelfServiceDeprecated.value &&
         DATA_PERMISSION_OPTIONS.noSelfServiceDeprecated,
     ]),
     database,
   );
-
+  
   // remove granular in the cases we can't provide configurability for schemas/tables
-  const shouldRemoveGranularOption = _.isEqual(options, baseOptions);
-  if (shouldRemoveGranularOption) {
-    options.pop();
-  }
+  // const shouldRemoveGranularOption = _.isEqual(options, baseOptions);
+  // if (shouldRemoveGranularOption) {
+  //   options.pop();
+  // }
+  
 
   return {
     permission: DataPermission.VIEW_DATA,
