@@ -40,4 +40,10 @@ export const DATA_PERMISSION_OPTIONS = {
     icon: "check",
     iconColor: "success",
   },
+  sandboxed: {
+    label: t`Sandboxed`,
+    value: DataPermissionValue.SANDBOXED,
+    icon: "lock",
+    iconColor: "accent4",
+  },
 };

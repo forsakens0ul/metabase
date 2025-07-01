@@ -1,10 +1,13 @@
 import PropTypes from "prop-types";
 import { Fragment, memo, useState } from "react";
+import { DataPermissionValue } from "metabase/admin/permissions/types";
 
 import PopoverWithTrigger from "metabase/components/PopoverWithTrigger";
 import Toggle from "metabase/core/components/Toggle";
 import { lighten } from "metabase/lib/colors";
 import { Icon, Tooltip } from "metabase/ui";
+import EditSandboxingModal from "../EditSandboxingModal";
+import { setSandboxConfig, getSandboxConfig } from "../SandboxUtils";
 
 import {
   ActionsList,
@@ -34,6 +37,8 @@ const propTypes = {
   isHighlighted: PropTypes.bool,
   disabledTooltip: PropTypes.string,
   warning: PropTypes.string,
+  entityId: PropTypes.object,
+  groupId: PropTypes.number,
 };
 
 export const PermissionsSelect = memo(function PermissionsSelect({
@@ -48,12 +53,32 @@ export const PermissionsSelect = memo(function PermissionsSelect({
   disabledTooltip,
   warning,
   isHighlighted,
+  entityId,
+  groupId,
 }) {
   const [toggleState, setToggleState] = useState(false);
+  const [showSandboxModal, setShowSandboxModal] = useState(false);
   const selectedOption = options.find((option) => option.value === value);
   const selectableOptions = hasChildren
     ? options
     : options.filter((option) => option !== selectedOption);
+
+  const handleOptionSelect = (optionValue, toggleValue) => {
+    if (optionValue === DataPermissionValue.SANDBOXED && entityId?.tableId) {
+      setShowSandboxModal(true);
+    } else {
+      onChange(optionValue, toggleLabel ? toggleValue : null);
+    }
+  };
+
+  const handleSandboxSave = (sandboxConfig) => {
+    if (entityId?.tableId && groupId) {
+      setSandboxConfig(groupId, entityId.tableId, sandboxConfig);
+      
+      onChange(DataPermissionValue.SANDBOXED, null);
+    }
+    setShowSandboxModal(false);
+  };
 
   const selectedOptionValue = (
     <PermissionsSelectRoot
@@ -90,56 +115,71 @@ export const PermissionsSelect = memo(function PermissionsSelect({
   const actionsForCurrentValue = actions?.[selectedOption?.value] || [];
   const hasActions = actionsForCurrentValue.length > 0;
 
+  const currentSandboxConfig = entityId?.tableId && groupId 
+    ? getSandboxConfig(groupId, entityId.tableId) 
+    : null;
+
   return (
-    <PopoverWithTrigger
-      disabled={isDisabled}
-      triggerElement={selectedOptionValue}
-      onClose={() => setToggleState(false)}
-      targetOffsetX={16}
-      targetOffsetY={8}
-    >
-      {({ onClose }) => (
-        <Fragment>
-          <OptionsList role="listbox">
-            {selectableOptions.map((option) => (
-              <OptionsListItem
-                role="option"
-                key={option.value}
-                onClick={() => {
-                  onClose();
-                  onChange(option.value, toggleLabel ? toggleState : null);
-                }}
-              >
-                <PermissionsSelectOption {...option} />
-              </OptionsListItem>
-            ))}
-          </OptionsList>
-          {hasActions && (
-            <ActionsList>
-              {actionsForCurrentValue.map((action, index) => (
+    <>
+      <PopoverWithTrigger
+        disabled={isDisabled}
+        triggerElement={selectedOptionValue}
+        onClose={() => setToggleState(false)}
+        targetOffsetX={16}
+        targetOffsetY={8}
+      >
+        {({ onClose }) => (
+          <Fragment>
+            <OptionsList role="listbox">
+              {selectableOptions.map((option) => (
                 <OptionsListItem
-                  key={index}
                   role="option"
+                  key={option.value}
                   onClick={() => {
                     onClose();
-                    onAction(action);
+                    handleOptionSelect(option.value, toggleLabel ? toggleState : null);
                   }}
                 >
-                  <PermissionsSelectOption {...action} />
+                  <PermissionsSelectOption {...option} />
                 </OptionsListItem>
               ))}
-            </ActionsList>
-          )}
+            </OptionsList>
+            {hasActions && (
+              <ActionsList>
+                {actionsForCurrentValue.map((action, index) => (
+                  <OptionsListItem
+                    key={index}
+                    role="option"
+                    onClick={() => {
+                      onClose();
+                      onAction(action);
+                    }}
+                  >
+                    <PermissionsSelectOption {...action} />
+                  </OptionsListItem>
+                ))}
+              </ActionsList>
+            )}
 
-          {hasChildren && (
-            <ToggleContainer>
-              <ToggleLabel>{toggleLabel}</ToggleLabel>
-              <Toggle small value={toggleState} onChange={setToggleState} />
-            </ToggleContainer>
-          )}
-        </Fragment>
+            {hasChildren && (
+              <ToggleContainer>
+                <ToggleLabel>{toggleLabel}</ToggleLabel>
+                <Toggle small value={toggleState} onChange={setToggleState} />
+              </ToggleContainer>
+            )}
+          </Fragment>
+        )}
+      </PopoverWithTrigger>
+
+      {showSandboxModal && entityId?.tableId && (
+        <EditSandboxingModal
+          table={{ id: entityId.tableId, fields: [] }}
+          onClose={() => setShowSandboxModal(false)}
+          onSave={handleSandboxSave}
+          initialMapping={currentSandboxConfig}
+        />
       )}
-    </PopoverWithTrigger>
+    </>
   );
 });
 

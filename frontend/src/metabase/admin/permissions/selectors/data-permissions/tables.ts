@@ -93,6 +93,7 @@ const buildAccessPermission = (
     _.compact([
       DATA_PERMISSION_OPTIONS.unrestricted,
       DATA_PERMISSION_OPTIONS.controlled,
+      DATA_PERMISSION_OPTIONS.sandboxed,
       originalValue === DATA_PERMISSION_OPTIONS.noSelfServiceDeprecated.value &&
         DATA_PERMISSION_OPTIONS.noSelfServiceDeprecated,
       ...PLUGIN_ADMIN_PERMISSIONS_TABLE_OPTIONS,
@@ -100,13 +101,11 @@ const buildAccessPermission = (
     value,
   );
 
-  console.log("View data options:", options);
-
   const isDisabled =
     isAdmin ||
     options.length <= 1 ||
     PLUGIN_ADVANCED_PERMISSIONS.isAccessPermissionDisabled(value, "tables");
-
+  
   return {
     permission: DataPermission.VIEW_DATA,
     type: DataPermissionType.ACCESS,

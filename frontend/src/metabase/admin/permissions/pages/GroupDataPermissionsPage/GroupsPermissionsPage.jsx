@@ -178,6 +178,7 @@ function GroupsPermissionsPage({
           {...permissionEditor}
           isLoading={isEditorLoading}
           error={editorError}
+          groupId={parseInt(params.groupId)}
           onSelect={handleTableItemSelect}
           onChange={handlePermissionChange}
           onAction={handleAction}

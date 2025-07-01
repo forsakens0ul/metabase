@@ -114,6 +114,7 @@ const buildAccessPermission = (
   const options = PLUGIN_ADVANCED_PERMISSIONS.addTablePermissionOptions(
     _.compact([
       DATA_PERMISSION_OPTIONS.unrestricted,
+      DATA_PERMISSION_OPTIONS.sandboxed,
       ...PLUGIN_ADMIN_PERMISSIONS_TABLE_FIELDS_OPTIONS,
       originalValue === DATA_PERMISSION_OPTIONS.noSelfServiceDeprecated.value &&
         DATA_PERMISSION_OPTIONS.noSelfServiceDeprecated,

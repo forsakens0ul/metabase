@@ -33,6 +33,7 @@ const propTypes = {
   onChange: PropTypes.func,
   onAction: PropTypes.func,
   colorScheme: PropTypes.oneOf(["default", "admin"]),
+  groupId: PropTypes.number,
 };
 
 export function PermissionsTable({
@@ -43,6 +44,7 @@ export function PermissionsTable({
   onChange,
   colorScheme,
   emptyState = null,
+  groupId,
 }) {
   const [confirmations, setConfirmations] = useState([]);
   const confirmActionRef = useRef(null);
@@ -141,6 +143,8 @@ export function PermissionsTable({
                             onAction(actionCreator, entity)
                           }
                           colorScheme={colorScheme}
+                          entityId={entity.entityId}
+                          groupId={groupId}
                         />
                       )}
                     </PermissionsTableCell>

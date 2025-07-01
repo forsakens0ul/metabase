@@ -13,10 +13,11 @@ import {
 export const permissionEditorPropTypes = {
   isLoading: PropTypes.bool,
   error: PropTypes.string,
+  groupId: PropTypes.number,
   ...permissionEditorContentPropTypes,
 };
 
-export const PermissionsEditor = ({ isLoading, error, ...contentProps }) => {
+export const PermissionsEditor = ({ isLoading, error, groupId, ...contentProps }) => {
   return (
     <PermissionsEditorRoot>
       <LoadingAndErrorWrapper loading={isLoading} error={error} noWrapper>
@@ -24,7 +25,7 @@ export const PermissionsEditor = ({ isLoading, error, ...contentProps }) => {
           <Box mx="xl" mb="md">
             <UpsellPermissions source="settings-permissions" />
           </Box>
-          <PermissionsEditorContent {...contentProps} />
+          <PermissionsEditorContent groupId={groupId} {...contentProps} />
         </>
       </LoadingAndErrorWrapper>
     </PermissionsEditorRoot>

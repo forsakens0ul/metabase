@@ -32,6 +32,7 @@ export const permissionEditorContentPropTypes = {
   breadcrumbs: PropTypes.array,
   postHeaderContent: PropTypes.func,
   preHeaderContent: PropTypes.func,
+  groupId: PropTypes.number,
 };
 
 export function PermissionsEditorContent({
@@ -47,6 +48,7 @@ export function PermissionsEditorContent({
   onAction,
   postHeaderContent: PostHeaderContent = () => null,
   preHeaderContent: PreHeaderContent = () => null,
+  groupId,
 }) {
   const [filter, setFilter] = useState("");
   const debouncedFilter = useDebouncedValue(filter, SEARCH_DEBOUNCE_DURATION);
@@ -100,6 +102,7 @@ export function PermissionsEditorContent({
           onSelect={onSelect}
           onChange={onChange}
           onAction={onAction}
+          groupId={groupId}
           emptyState={
             <EditorEmptyStateContainer>
               <EmptyState message={t`Nothing here`} icon="folder" />
