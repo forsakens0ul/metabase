@@ -1,6 +1,9 @@
 import PropTypes from "prop-types";
-import { Fragment, memo, useState } from "react";
+import { Fragment, memo, useState, useEffect } from "react";
+import { useSelector, useDispatch } from "metabase/lib/redux";
+import { getMetadataWithHiddenTables } from "metabase/selectors/metadata";
 import { DataPermissionValue } from "metabase/admin/permissions/types";
+import Tables from "metabase/entities/tables";
 
 import PopoverWithTrigger from "metabase/components/PopoverWithTrigger";
 import Toggle from "metabase/core/components/Toggle";
@@ -58,6 +61,25 @@ export const PermissionsSelect = memo(function PermissionsSelect({
 }) {
   const [toggleState, setToggleState] = useState(false);
   const [showSandboxModal, setShowSandboxModal] = useState(false);
+
+  const dispatch = useDispatch();
+
+  // 获取表完整元数据（含字段）
+  const tableMetadata = useSelector((state) => {
+    if (entityId?.tableId) {
+      const metadata = getMetadataWithHiddenTables(state);
+      return metadata?.table(entityId.tableId);
+    }
+    return null;
+  });
+
+  // 当弹窗需要显示且字段列表为空时，主动请求表元数据
+  useEffect(() => {
+    if (showSandboxModal && entityId?.tableId && (!tableMetadata || !tableMetadata.fields?.length)) {
+      dispatch(Tables.actions.fetchMetadata({ id: entityId.tableId }));
+    }
+  }, [showSandboxModal, entityId?.tableId, tableMetadata]);
+
   const selectedOption = options.find((option) => option.value === value);
   const selectableOptions = hasChildren
     ? options
@@ -71,11 +93,15 @@ export const PermissionsSelect = memo(function PermissionsSelect({
     }
   };
 
-  const handleSandboxSave = (sandboxConfig) => {
+  const handleSandboxSave = async (sandboxConfig) => {
     if (entityId?.tableId && groupId) {
-      setSandboxConfig(groupId, entityId.tableId, sandboxConfig);
-      
-      onChange(DataPermissionValue.SANDBOXED, null);
+      try {
+        await setSandboxConfig(groupId, entityId.tableId, sandboxConfig);
+        onChange(DataPermissionValue.SANDBOXED, null);
+      } catch (error) {
+        console.error("Failed to save sandbox configuration:", error);
+        // Handle error appropriately here
+      }
     }
     setShowSandboxModal(false);
   };
@@ -115,65 +141,74 @@ export const PermissionsSelect = memo(function PermissionsSelect({
   const actionsForCurrentValue = actions?.[selectedOption?.value] || [];
   const hasActions = actionsForCurrentValue.length > 0;
 
-  const currentSandboxConfig = entityId?.tableId && groupId 
-    ? getSandboxConfig(groupId, entityId.tableId) 
-    : null;
+  const [currentSandboxConfig, setCurrentSandboxConfig] = useState(null);
+  
+  useEffect(() => {
+    if (entityId?.tableId && groupId && showSandboxModal) {
+      getSandboxConfig(groupId, entityId.tableId).then(config => {
+        setCurrentSandboxConfig(config);
+      }).catch(error => {
+        console.error("Failed to load sandbox config:", error);
+        setCurrentSandboxConfig(null);
+      });
+    }
+  }, [entityId?.tableId, groupId, showSandboxModal]);
 
   return (
     <>
-      <PopoverWithTrigger
-        disabled={isDisabled}
-        triggerElement={selectedOptionValue}
-        onClose={() => setToggleState(false)}
-        targetOffsetX={16}
-        targetOffsetY={8}
-      >
-        {({ onClose }) => (
-          <Fragment>
-            <OptionsList role="listbox">
-              {selectableOptions.map((option) => (
+    <PopoverWithTrigger
+      disabled={isDisabled}
+      triggerElement={selectedOptionValue}
+      onClose={() => setToggleState(false)}
+      targetOffsetX={16}
+      targetOffsetY={8}
+    >
+      {({ onClose }) => (
+        <Fragment>
+          <OptionsList role="listbox">
+            {selectableOptions.map((option) => (
+              <OptionsListItem
+                role="option"
+                key={option.value}
+                onClick={() => {
+                  onClose();
+                    handleOptionSelect(option.value, toggleLabel ? toggleState : null);
+                }}
+              >
+                <PermissionsSelectOption {...option} />
+              </OptionsListItem>
+            ))}
+          </OptionsList>
+          {hasActions && (
+            <ActionsList>
+              {actionsForCurrentValue.map((action, index) => (
                 <OptionsListItem
+                  key={index}
                   role="option"
-                  key={option.value}
                   onClick={() => {
                     onClose();
-                    handleOptionSelect(option.value, toggleLabel ? toggleState : null);
+                    onAction(action);
                   }}
                 >
-                  <PermissionsSelectOption {...option} />
+                  <PermissionsSelectOption {...action} />
                 </OptionsListItem>
               ))}
-            </OptionsList>
-            {hasActions && (
-              <ActionsList>
-                {actionsForCurrentValue.map((action, index) => (
-                  <OptionsListItem
-                    key={index}
-                    role="option"
-                    onClick={() => {
-                      onClose();
-                      onAction(action);
-                    }}
-                  >
-                    <PermissionsSelectOption {...action} />
-                  </OptionsListItem>
-                ))}
-              </ActionsList>
-            )}
+            </ActionsList>
+          )}
 
-            {hasChildren && (
-              <ToggleContainer>
-                <ToggleLabel>{toggleLabel}</ToggleLabel>
-                <Toggle small value={toggleState} onChange={setToggleState} />
-              </ToggleContainer>
-            )}
-          </Fragment>
-        )}
-      </PopoverWithTrigger>
+          {hasChildren && (
+            <ToggleContainer>
+              <ToggleLabel>{toggleLabel}</ToggleLabel>
+              <Toggle small value={toggleState} onChange={setToggleState} />
+            </ToggleContainer>
+          )}
+        </Fragment>
+      )}
+    </PopoverWithTrigger>
 
-      {showSandboxModal && entityId?.tableId && (
+      {showSandboxModal && tableMetadata && (
         <EditSandboxingModal
-          table={{ id: entityId.tableId, fields: [] }}
+          table={tableMetadata}
           onClose={() => setShowSandboxModal(false)}
           onSave={handleSandboxSave}
           initialMapping={currentSandboxConfig}

@@ -48,10 +48,28 @@
   graph)
 
 (defenterprise add-sandboxes-to-permissions-graph
-  "Augment the permissions graph with active connection impersonation policies. OSS implementation returns graph as-is."
+  "Augment the permissions graph with active sandbox policies. OSS implementation returns graph as-is for now."
   metabase-enterprise.sandbox.models.group-table-access-policy
   [graph & [_opts]]
-  graph)
+  ;; OSS implementation: Add sandboxes from group_sandbox table
+  (try
+    (require 'metabase.sandbox.models.group-sandbox)
+    (if-let [sandboxes (seq (t2/select :model/GroupSandbox))]
+      (reduce (fn [acc-graph sandbox]
+                (let [{:keys [group_id table_id]} sandbox
+                      table (t2/select-one :model/Table :id table_id)
+                      db-id (:db_id table)
+                      schema (:schema table)]
+                  (assoc-in acc-graph 
+                           [group_id db-id :view-data 
+                            (or schema "") table_id] 
+                           :sandboxed)))
+              graph
+              sandboxes)
+      graph)
+    (catch Exception _e
+      ;; If sandbox functionality is not available, just return the graph unchanged
+      graph)))
 
 (mu/defn ellide? :- :boolean
   "If a table has the least permissive value for a perm type, leave it out,

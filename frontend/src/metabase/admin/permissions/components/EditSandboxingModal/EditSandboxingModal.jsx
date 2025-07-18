@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import { t } from "ttag";
 
@@ -17,8 +17,8 @@ const EditSandboxingModal = ({
   const [fieldId, setFieldId] = useState(initialMapping?.fieldId || null);
   const [groupAttribute, setGroupAttribute] = useState(initialMapping?.groupAttribute || "id");
 
-  // 获取表的所有字段列表
-  const fields = table?.fields || [];
+  // 使用 useMemo 以避免每次渲染都新建数组，满足 eslint 依赖检查
+  const fields = useMemo(() => table?.fields || [], [table?.fields]);
   
   // 支持的 Group 属性列表
   const groupAttributes = [

@@ -1,37 +1,75 @@
-// 沙盒配置状态管理
-// 实际项目中这部分建议移到 Redux 或相关状态管理中
+import { SandboxApi_Legacy as SandboxApi } from "metabase/api";
 
 // 内存存储当前沙盒配置
 const sandboxConfigs = new Map();
 
 // 保存表的沙盒配置
-export const setSandboxConfig = (groupId, tableId, config) => {
+export const setSandboxConfig = async (groupId, tableId, config) => {
   const key = `${groupId}-${tableId}`;
-  sandboxConfigs.set(key, config);
-  console.log(`Sandbox config saved for ${key}:`, config);
-  // TODO: 在这里可以添加 API 调用，将配置发送到后端
-  return true;
+  try {
+    // 调用后端 API 保存配置
+    const response = await SandboxApi.create({
+      groupId,
+      tableId,
+      fieldId: config.fieldId,
+      groupAttribute: config.groupAttribute
+    });
+    
+    // 保存到本地缓存
+    sandboxConfigs.set(key, config);
+    return response;
+  } catch (error) {
+    console.error("Failed to save sandbox config:", error);
+    throw error;
+  }
 };
 
 // 获取表的沙盒配置
-export const getSandboxConfig = (groupId, tableId) => {
+export const getSandboxConfig = async (groupId, tableId) => {
   const key = `${groupId}-${tableId}`;
-  return sandboxConfigs.get(key) || null;
+  
+  // 先检查本地缓存
+  if (sandboxConfigs.has(key)) {
+    return sandboxConfigs.get(key);
+  }
+  
+  try {
+    // 从后端获取配置
+    const response = await SandboxApi.get({ groupId, tableId });
+    if (response) {
+      const config = {
+        fieldId: response.field_id,
+        fieldName: response.field_name || "",
+        groupAttribute: response.group_attribute
+      };
+      sandboxConfigs.set(key, config);
+      return config;
+    }
+  } catch (error) {
+    // 如果后端返回 404，表示没有配置，这是正常情况
+    if (error.status !== 404) {
+      console.error("Failed to get sandbox config:", error);
+    }
+  }
+  
+  return null;
 };
 
 // 判断表是否有沙盒配置
-export const hasSandboxConfig = (groupId, tableId) => {
-  const key = `${groupId}-${tableId}`;
-  return sandboxConfigs.has(key);
+export const hasSandboxConfig = async (groupId, tableId) => {
+  const config = await getSandboxConfig(groupId, tableId);
+  return config !== null;
 };
 
 // 删除表的沙盒配置
-export const deleteSandboxConfig = (groupId, tableId) => {
+export const deleteSandboxConfig = async (groupId, tableId) => {
   const key = `${groupId}-${tableId}`;
-  return sandboxConfigs.delete(key);
-};
-
-// 在此处可以添加其他沙盒工具函数，如：
-// - 从后端加载沙盒配置
-// - 验证沙盒配置
-// - 应用沙盒过滤条件等 
+  try {
+    await SandboxApi.delete({ groupId, tableId });
+    sandboxConfigs.delete(key);
+    return true;
+  } catch (error) {
+    console.error("Failed to delete sandbox config:", error);
+    throw error;
+  }
+}; 

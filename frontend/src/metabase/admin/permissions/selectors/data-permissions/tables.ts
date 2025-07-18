@@ -105,7 +105,7 @@ const buildAccessPermission = (
     isAdmin ||
     options.length <= 1 ||
     PLUGIN_ADVANCED_PERMISSIONS.isAccessPermissionDisabled(value, "tables");
-  
+
   return {
     permission: DataPermission.VIEW_DATA,
     type: DataPermissionType.ACCESS,
@@ -205,11 +205,6 @@ export const buildTablesPermissions = (
     accessPermission.value,
     database,
   );
-
-  const hasAnyAccessOptions = accessPermission.options.length > 1;
-
-  const shouldShowViewDataColumn =
-    PLUGIN_ADVANCED_PERMISSIONS.shouldShowViewDataColumn && hasAnyAccessOptions;
 
   return [
     accessPermission,

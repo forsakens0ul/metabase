@@ -20,6 +20,7 @@
    [metabase.query-processor.middleware.cumulative-aggregations :as qp.cumulative-aggregations]
    [metabase.query-processor.middleware.desugar :as desugar]
    [metabase.query-processor.middleware.enterprise :as qp.middleware.enterprise]
+   [metabase.sandbox.query-processor.middleware.sandbox-filtering :as sandbox-filtering]
    [metabase.query-processor.middleware.escape-join-aliases :as escape-join-aliases]
    [metabase.query-processor.middleware.expand-macros :as expand-macros]
    [metabase.query-processor.middleware.fetch-source-query :as fetch-source-query]
@@ -119,6 +120,7 @@
    (ensure-pmbql #'qp.middleware.enterprise/apply-impersonation)
    (ensure-pmbql #'qp.middleware.enterprise/attach-mirror-db-middleware)
    (ensure-legacy #'qp.middleware.enterprise/apply-sandboxing)
+   (ensure-legacy #'sandbox-filtering/sandbox-filtering-middleware)
    (ensure-legacy #'qp.persistence/substitute-persisted-query)
    (ensure-legacy #'qp.add-implicit-clauses/add-implicit-clauses)
    (ensure-legacy #'qp.add-dimension-projections/add-remapped-columns)

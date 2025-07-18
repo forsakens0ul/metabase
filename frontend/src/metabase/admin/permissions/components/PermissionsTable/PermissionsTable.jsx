@@ -134,18 +134,18 @@ export function PermissionsTable({
                       key={permission?.type ?? String(index)}
                     >
                       {permission && (
-                        <PermissionsSelect
-                          {...permission}
-                          onChange={(value, toggleState) =>
-                            handleChange(value, toggleState, entity, permission)
-                          }
-                          onAction={(actionCreator) =>
-                            onAction(actionCreator, entity)
-                          }
-                          colorScheme={colorScheme}
+                      <PermissionsSelect
+                        {...permission}
+                        onChange={(value, toggleState) =>
+                          handleChange(value, toggleState, entity, permission)
+                        }
+                        onAction={(actionCreator) =>
+                          onAction(actionCreator, entity)
+                        }
+                        colorScheme={colorScheme}
                           entityId={entity.entityId}
                           groupId={groupId}
-                        />
+                      />
                       )}
                     </PermissionsTableCell>
                   );

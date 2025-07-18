@@ -190,3 +190,11 @@
   "Returns a boolean representing whether this group is a tenant group."
   [group-id]
   (t2/select-one-fn :is_tenant_group :model/PermissionsGroup :id (u/the-id group-id)))
+
+(defn user->groups
+  "Return all PermissionsGroups that a user belongs to."
+  [user-id]
+  (when user-id
+    (t2/select [:model/PermissionsGroup :id :name]
+               {:left-join [[:permissions_group_membership :pgm] [:= :permissions_group.id :pgm.group_id]]
+                :where     [:= :pgm.user_id (u/the-id user-id)]})))

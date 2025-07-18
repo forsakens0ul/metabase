@@ -36,6 +36,7 @@
    [metabase.queries.api]
    [metabase.query-processor.api]
    [metabase.revisions.api]
+   [metabase.sandbox.api]
    [metabase.search.api]
    [metabase.segments.api]
    [metabase.session.api]
@@ -165,6 +166,7 @@
    "/public"               (+public-exceptions 'metabase.public-sharing.api)
    "/pulse"                metabase.pulse.api/pulse-routes
    "/revision"             (+auth 'metabase.revisions.api)
+   "/sandbox"              (+auth 'metabase.sandbox.api)
    "/search"               (+auth metabase.search.api/routes)
    "/segment"              (+auth 'metabase.segments.api)
    "/session"              metabase.session.api/routes

@@ -213,10 +213,6 @@ export const buildFieldsPermissions = (
     accessPermission.value,
   );
 
-  const hasAnyAccessOptions = accessPermission.options.length > 1;
-  const shouldShowViewDataColumn =
-    PLUGIN_ADVANCED_PERMISSIONS.shouldShowViewDataColumn && hasAnyAccessOptions;
-
   return [
     accessPermission,
     nativePermission,

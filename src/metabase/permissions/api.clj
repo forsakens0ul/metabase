@@ -121,10 +121,20 @@
   (data-perms.graph/api-graph {:group-id group-id}))
 
 (defenterprise upsert-sandboxes!
-  "OSS implementation of `upsert-sandboxes!`. Errors since this is an enterprise feature."
+  "OSS implementation of `upsert-sandboxes!`. Creates or updates sandbox policies in the group_sandbox table."
   metabase-enterprise.sandbox.models.group-table-access-policy
-  [_sandboxes]
-  (throw (premium-features/ee-feature-error (tru "Sandboxes"))))
+  [sandboxes]
+  ;; OSS implementation: Create sandbox policies using the sandbox API
+  (when (seq sandboxes)
+    (require 'metabase.sandbox.models.group-sandbox)
+    (let [upsert-fn (resolve 'metabase.sandbox.models.group-sandbox/upsert-sandbox!)]
+      (mapv (fn [sandbox]
+              (let [{:keys [group_id table_id field_id group_attribute]} sandbox]
+                (upsert-fn {:group_id group_id
+                           :table_id table_id  
+                           :field_id field_id
+                           :group_attribute group_attribute})))
+            sandboxes))))
 
 (defenterprise insert-impersonations!
   "OSS implementation of `insert-impersonations!`. Errors since this is an enterprise feature."
